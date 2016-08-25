@@ -1,0 +1,3 @@
+[submodule "arduino/ic2pwm"]
+	path = arduino/libraries/Adafruit_PWMServoDriver
+	url = https://github.com/adafruit/Adafruit-PWM-Servo-Driver-Library.git
