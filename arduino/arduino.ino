@@ -6,7 +6,7 @@
 #include "pins.h"
 
 
-toMsgAdapter recieveMsg();
+bool recieveMsg();
 void sendMsg(toNucAdapter msg);
 // Initialise the pwm board, note we may need to change the address
 // see examples
@@ -20,26 +20,45 @@ void setup() {
     bytesRead = 0;
     pwm.begin();
   
-    pwm.setPWMFreq(50);
+    pwm.setPWMFreq(53);
 }
-
+bool foundFirst = false;
+toMsgAdapter msg;
 void loop() {
-    toMsgAdapter msg;
+    
     toNucAdapter fromMsg;
     
+    
+    byte MAGIC[2] = {0x55, 0xAA};
+    
     while(Serial.available() > 0) {
-        buffer[++bytesRead] = Serial.read();
-        if(bytesRead >=  sizeof(struct toControlMsg))  {
-            break;
+        char val = Serial.read();
+        if(val == MAGIC[0]) {
+          bytesRead = 0;
+          foundFirst = true;
+        } /*else if(foundFirst && val == MAGIC[1]) {
+          bytesRead = 1;
+          foundFirst = false;
+        } else {
+          foundFirst = false;
+        }*/
+        
+        if(foundFirst) {
+          msg.data.structBytes[++bytesRead] = val;
+          if(bytesRead >=  sizeof(struct toControlMsg))  {
+              break;
+          }
         }
     }
+    
 
     //TODO: add adc code here
     //TODO: add claw feeedback here
-    fromMsg.msg.pot0 = bytesRead;
+    //fromMsg.msg.pot0 = bytesRead;
     //sendMsg(fromMsg);
-    msg = recieveMsg();
-    if (msg.success) {
+    msg.success = recieveMsg();
+    
+    if (bytesRead > 0) {    
       
         //note: we may want to wrap this with our saftey caps like it is on the board
         //I'm not 100% that this set PWM function actually sets a us pulse width, need to double check
@@ -55,6 +74,7 @@ void loop() {
 
 
         setPin(ARM_ROT, 0, msg.data.msg.armRotate);
+        //setPin(ARM_ROT, 0, 1500);
         setPin(ARM_TOP, 0, msg.data.msg.armTop);
         setPin(ARM_BOT, 0, msg.data.msg.armBottom);
 
@@ -68,6 +88,9 @@ void loop() {
         fromMsg.msg.swerveLeft = analogRead(LEFT_SWERVE_POT);
         fromMsg.msg.swerveRight = analogRead(RIGHT_SWERVE_POT);
         fromMsg.msg.pot0 = analogRead(ARM_POT);
+        fromMsg.msg.pot1 = msg.data.msg.flSpeed * (4096.0/20000.0);
+        fromMsg.msg.pot2 = msg.data.msg.flSpeed;
+        fromMsg.msg.pot3 = 100;
 
         fromMsg.msg.magic = MESSAGE_MAGIC;
         sendMsg(fromMsg);
@@ -76,26 +99,27 @@ void loop() {
 }
 
 void setPin(int port, int rand, int pwmValue) {
-   pwm.setPWM(port, rand, 800*4096.0f/20000.0f); 
+   pwm.setPWM(port, rand, pwmValue*(4096.0/20000.0)); 
 }
 
 /**
  * Attempts to read a new serial message.
  * @return success=false if no message, otherwise a filled msg struct
  */
-toMsgAdapter recieveMsg() {
+bool recieveMsg() {
 
     toMsgAdapter resp;
     if(bytesRead < sizeof(struct toControlMsg)) {
-        resp.success = false;
-        return resp;
+        //resp.success = false;
+        return false;
     } else {
-        memcpy(resp.data.structBytes, buffer, sizeof(struct toControlMsg));
+        //memcpy(resp.data.structBytes, buffer, sizeof(struct toControlMsg));
         //Serial.readBytes(resp.data.structBytes, sizeof(struct toControlMsg));
-        resp.success = true;
+        //resp.success = true;
         bytesRead = 0;
+        return true;
+
     }
-    return resp;
 }
 
 void sendMsg(toNucAdapter msg) {
