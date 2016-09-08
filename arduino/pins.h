@@ -8,9 +8,10 @@
 #define ARM_ROT      4
 #define ARM_TOP      11
 #define ARM_BOT      10
-#define CLAW_ROT    15
-#define LIDAR_TILT  15
+#define CLAW_ROT     14
+#define LIDAR_TILT   12
+#define CLAW_GRIP    13
 
-#define ARM_POT 15
-#define LEFT_SWERVE_POT 15
-#define RIGHT_SWERVE_POT 15
+#define ARM_POT A0
+#define LEFT_SWERVE_POT A1
+#define RIGHT_SWERVE_POT A2
