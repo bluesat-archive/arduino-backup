@@ -20,7 +20,7 @@ void setup() {
     bytesRead = 0;
     pwm.begin();
   
-    pwm.setPWMFreq(53);
+    pwm.setPWMFreq(52);
 }
 bool foundFirst = false;
 toMsgAdapter msg;
