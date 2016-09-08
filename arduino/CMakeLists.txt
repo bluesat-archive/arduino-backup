@@ -14,4 +14,8 @@ generate_arduino_library(Adafruit_PWMServoDriver
 generate_arduino_firmware(${CMAKE_PROJECT_NAME}
         SRCS arduino.ino
         LIBS Adafruit_PWMServoDriver
-        BOARD uno)
+        PORT /dev/ttyACM0
+        SERIAL picocom @SERIAL_PORT@ 
+        BOARD uno
+        )
+

@@ -56,17 +56,6 @@ CMAKE_BINARY_DIR = /home/blusat/arduino-backup/arduino
 #=============================================================================
 # Targets provided globally by CMake.
 
-# Special rule for the target edit_cache
-edit_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
-	/usr/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
-.PHONY : edit_cache
-
-# Special rule for the target edit_cache
-edit_cache/fast: edit_cache
-
-.PHONY : edit_cache/fast
-
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
@@ -77,6 +66,17 @@ rebuild_cache:
 rebuild_cache/fast: rebuild_cache
 
 .PHONY : rebuild_cache/fast
+
+# Special rule for the target edit_cache
+edit_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
+	/usr/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+.PHONY : edit_cache
+
+# Special rule for the target edit_cache
+edit_cache/fast: edit_cache
+
+.PHONY : edit_cache/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -111,56 +111,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named arduino-size
+# Target rules for targets named uno_twi
 
 # Build rule for target.
-arduino-size: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 arduino-size
-.PHONY : arduino-size
+uno_twi: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 uno_twi
+.PHONY : uno_twi
 
 # fast build rule for target.
-arduino-size/fast:
-	$(MAKE) -f CMakeFiles/arduino-size.dir/build.make CMakeFiles/arduino-size.dir/build
-.PHONY : arduino-size/fast
-
-#=============================================================================
-# Target rules for targets named arduino
-
-# Build rule for target.
-arduino: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 arduino
-.PHONY : arduino
-
-# fast build rule for target.
-arduino/fast:
-	$(MAKE) -f CMakeFiles/arduino.dir/build.make CMakeFiles/arduino.dir/build
-.PHONY : arduino/fast
-
-#=============================================================================
-# Target rules for targets named Adafruit_PWMServoDriver
-
-# Build rule for target.
-Adafruit_PWMServoDriver: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 Adafruit_PWMServoDriver
-.PHONY : Adafruit_PWMServoDriver
-
-# fast build rule for target.
-Adafruit_PWMServoDriver/fast:
-	$(MAKE) -f CMakeFiles/Adafruit_PWMServoDriver.dir/build.make CMakeFiles/Adafruit_PWMServoDriver.dir/build
-.PHONY : Adafruit_PWMServoDriver/fast
-
-#=============================================================================
-# Target rules for targets named uno_CORE
-
-# Build rule for target.
-uno_CORE: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 uno_CORE
-.PHONY : uno_CORE
-
-# fast build rule for target.
-uno_CORE/fast:
-	$(MAKE) -f CMakeFiles/uno_CORE.dir/build.make CMakeFiles/uno_CORE.dir/build
-.PHONY : uno_CORE/fast
+uno_twi/fast:
+	$(MAKE) -f CMakeFiles/uno_twi.dir/build.make CMakeFiles/uno_twi.dir/build
+.PHONY : uno_twi/fast
 
 #=============================================================================
 # Target rules for targets named uno_Adafruit_PWMServoDriver
@@ -176,6 +137,32 @@ uno_Adafruit_PWMServoDriver/fast:
 .PHONY : uno_Adafruit_PWMServoDriver/fast
 
 #=============================================================================
+# Target rules for targets named uno_CORE
+
+# Build rule for target.
+uno_CORE: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 uno_CORE
+.PHONY : uno_CORE
+
+# fast build rule for target.
+uno_CORE/fast:
+	$(MAKE) -f CMakeFiles/uno_CORE.dir/build.make CMakeFiles/uno_CORE.dir/build
+.PHONY : uno_CORE/fast
+
+#=============================================================================
+# Target rules for targets named Adafruit_PWMServoDriver
+
+# Build rule for target.
+Adafruit_PWMServoDriver: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 Adafruit_PWMServoDriver
+.PHONY : Adafruit_PWMServoDriver
+
+# fast build rule for target.
+Adafruit_PWMServoDriver/fast:
+	$(MAKE) -f CMakeFiles/Adafruit_PWMServoDriver.dir/build.make CMakeFiles/Adafruit_PWMServoDriver.dir/build
+.PHONY : Adafruit_PWMServoDriver/fast
+
+#=============================================================================
 # Target rules for targets named uno_Wire
 
 # Build rule for target.
@@ -189,17 +176,69 @@ uno_Wire/fast:
 .PHONY : uno_Wire/fast
 
 #=============================================================================
-# Target rules for targets named uno_twi
+# Target rules for targets named arduino
 
 # Build rule for target.
-uno_twi: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 uno_twi
-.PHONY : uno_twi
+arduino: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 arduino
+.PHONY : arduino
 
 # fast build rule for target.
-uno_twi/fast:
-	$(MAKE) -f CMakeFiles/uno_twi.dir/build.make CMakeFiles/uno_twi.dir/build
-.PHONY : uno_twi/fast
+arduino/fast:
+	$(MAKE) -f CMakeFiles/arduino.dir/build.make CMakeFiles/arduino.dir/build
+.PHONY : arduino/fast
+
+#=============================================================================
+# Target rules for targets named arduino-size
+
+# Build rule for target.
+arduino-size: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 arduino-size
+.PHONY : arduino-size
+
+# fast build rule for target.
+arduino-size/fast:
+	$(MAKE) -f CMakeFiles/arduino-size.dir/build.make CMakeFiles/arduino-size.dir/build
+.PHONY : arduino-size/fast
+
+#=============================================================================
+# Target rules for targets named arduino-upload
+
+# Build rule for target.
+arduino-upload: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 arduino-upload
+.PHONY : arduino-upload
+
+# fast build rule for target.
+arduino-upload/fast:
+	$(MAKE) -f CMakeFiles/arduino-upload.dir/build.make CMakeFiles/arduino-upload.dir/build
+.PHONY : arduino-upload/fast
+
+#=============================================================================
+# Target rules for targets named upload
+
+# Build rule for target.
+upload: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 upload
+.PHONY : upload
+
+# fast build rule for target.
+upload/fast:
+	$(MAKE) -f CMakeFiles/upload.dir/build.make CMakeFiles/upload.dir/build
+.PHONY : upload/fast
+
+#=============================================================================
+# Target rules for targets named arduino-serial
+
+# Build rule for target.
+arduino-serial: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 arduino-serial
+.PHONY : arduino-serial
+
+# fast build rule for target.
+arduino-serial/fast:
+	$(MAKE) -f CMakeFiles/arduino-serial.dir/build.make CMakeFiles/arduino-serial.dir/build
+.PHONY : arduino-serial/fast
 
 arduino_arduino.ino.obj: arduino_arduino.ino.cpp.obj
 
@@ -234,8 +273,8 @@ libraries/Adafruit_PWMServoDriver/Adafruit_PWMServoDriver.obj: libraries/Adafrui
 
 # target to build an object file
 libraries/Adafruit_PWMServoDriver/Adafruit_PWMServoDriver.cpp.obj:
-	$(MAKE) -f CMakeFiles/Adafruit_PWMServoDriver.dir/build.make CMakeFiles/Adafruit_PWMServoDriver.dir/libraries/Adafruit_PWMServoDriver/Adafruit_PWMServoDriver.cpp.obj
 	$(MAKE) -f CMakeFiles/uno_Adafruit_PWMServoDriver.dir/build.make CMakeFiles/uno_Adafruit_PWMServoDriver.dir/libraries/Adafruit_PWMServoDriver/Adafruit_PWMServoDriver.cpp.obj
+	$(MAKE) -f CMakeFiles/Adafruit_PWMServoDriver.dir/build.make CMakeFiles/Adafruit_PWMServoDriver.dir/libraries/Adafruit_PWMServoDriver/Adafruit_PWMServoDriver.cpp.obj
 .PHONY : libraries/Adafruit_PWMServoDriver/Adafruit_PWMServoDriver.cpp.obj
 
 libraries/Adafruit_PWMServoDriver/Adafruit_PWMServoDriver.i: libraries/Adafruit_PWMServoDriver/Adafruit_PWMServoDriver.cpp.i
@@ -244,8 +283,8 @@ libraries/Adafruit_PWMServoDriver/Adafruit_PWMServoDriver.i: libraries/Adafruit_
 
 # target to preprocess a source file
 libraries/Adafruit_PWMServoDriver/Adafruit_PWMServoDriver.cpp.i:
-	$(MAKE) -f CMakeFiles/Adafruit_PWMServoDriver.dir/build.make CMakeFiles/Adafruit_PWMServoDriver.dir/libraries/Adafruit_PWMServoDriver/Adafruit_PWMServoDriver.cpp.i
 	$(MAKE) -f CMakeFiles/uno_Adafruit_PWMServoDriver.dir/build.make CMakeFiles/uno_Adafruit_PWMServoDriver.dir/libraries/Adafruit_PWMServoDriver/Adafruit_PWMServoDriver.cpp.i
+	$(MAKE) -f CMakeFiles/Adafruit_PWMServoDriver.dir/build.make CMakeFiles/Adafruit_PWMServoDriver.dir/libraries/Adafruit_PWMServoDriver/Adafruit_PWMServoDriver.cpp.i
 .PHONY : libraries/Adafruit_PWMServoDriver/Adafruit_PWMServoDriver.cpp.i
 
 libraries/Adafruit_PWMServoDriver/Adafruit_PWMServoDriver.s: libraries/Adafruit_PWMServoDriver/Adafruit_PWMServoDriver.cpp.s
@@ -254,8 +293,8 @@ libraries/Adafruit_PWMServoDriver/Adafruit_PWMServoDriver.s: libraries/Adafruit_
 
 # target to generate assembly for a file
 libraries/Adafruit_PWMServoDriver/Adafruit_PWMServoDriver.cpp.s:
-	$(MAKE) -f CMakeFiles/Adafruit_PWMServoDriver.dir/build.make CMakeFiles/Adafruit_PWMServoDriver.dir/libraries/Adafruit_PWMServoDriver/Adafruit_PWMServoDriver.cpp.s
 	$(MAKE) -f CMakeFiles/uno_Adafruit_PWMServoDriver.dir/build.make CMakeFiles/uno_Adafruit_PWMServoDriver.dir/libraries/Adafruit_PWMServoDriver/Adafruit_PWMServoDriver.cpp.s
+	$(MAKE) -f CMakeFiles/Adafruit_PWMServoDriver.dir/build.make CMakeFiles/Adafruit_PWMServoDriver.dir/libraries/Adafruit_PWMServoDriver/Adafruit_PWMServoDriver.cpp.s
 .PHONY : libraries/Adafruit_PWMServoDriver/Adafruit_PWMServoDriver.cpp.s
 
 usr/share/arduino/hardware/arduino/cores/arduino/CDC.obj: usr/share/arduino/hardware/arduino/cores/arduino/CDC.cpp.obj
@@ -804,8 +843,8 @@ usr/share/arduino/libraries/Wire/Wire.obj: usr/share/arduino/libraries/Wire/Wire
 
 # target to build an object file
 usr/share/arduino/libraries/Wire/Wire.cpp.obj:
-	$(MAKE) -f CMakeFiles/uno_Wire.dir/build.make CMakeFiles/uno_Wire.dir/usr/share/arduino/libraries/Wire/Wire.cpp.obj
 	$(MAKE) -f CMakeFiles/uno_twi.dir/build.make CMakeFiles/uno_twi.dir/usr/share/arduino/libraries/Wire/Wire.cpp.obj
+	$(MAKE) -f CMakeFiles/uno_Wire.dir/build.make CMakeFiles/uno_Wire.dir/usr/share/arduino/libraries/Wire/Wire.cpp.obj
 .PHONY : usr/share/arduino/libraries/Wire/Wire.cpp.obj
 
 usr/share/arduino/libraries/Wire/Wire.i: usr/share/arduino/libraries/Wire/Wire.cpp.i
@@ -814,8 +853,8 @@ usr/share/arduino/libraries/Wire/Wire.i: usr/share/arduino/libraries/Wire/Wire.c
 
 # target to preprocess a source file
 usr/share/arduino/libraries/Wire/Wire.cpp.i:
-	$(MAKE) -f CMakeFiles/uno_Wire.dir/build.make CMakeFiles/uno_Wire.dir/usr/share/arduino/libraries/Wire/Wire.cpp.i
 	$(MAKE) -f CMakeFiles/uno_twi.dir/build.make CMakeFiles/uno_twi.dir/usr/share/arduino/libraries/Wire/Wire.cpp.i
+	$(MAKE) -f CMakeFiles/uno_Wire.dir/build.make CMakeFiles/uno_Wire.dir/usr/share/arduino/libraries/Wire/Wire.cpp.i
 .PHONY : usr/share/arduino/libraries/Wire/Wire.cpp.i
 
 usr/share/arduino/libraries/Wire/Wire.s: usr/share/arduino/libraries/Wire/Wire.cpp.s
@@ -824,8 +863,8 @@ usr/share/arduino/libraries/Wire/Wire.s: usr/share/arduino/libraries/Wire/Wire.c
 
 # target to generate assembly for a file
 usr/share/arduino/libraries/Wire/Wire.cpp.s:
-	$(MAKE) -f CMakeFiles/uno_Wire.dir/build.make CMakeFiles/uno_Wire.dir/usr/share/arduino/libraries/Wire/Wire.cpp.s
 	$(MAKE) -f CMakeFiles/uno_twi.dir/build.make CMakeFiles/uno_twi.dir/usr/share/arduino/libraries/Wire/Wire.cpp.s
+	$(MAKE) -f CMakeFiles/uno_Wire.dir/build.make CMakeFiles/uno_Wire.dir/usr/share/arduino/libraries/Wire/Wire.cpp.s
 .PHONY : usr/share/arduino/libraries/Wire/Wire.cpp.s
 
 usr/share/arduino/libraries/Wire/utility/twi.obj: usr/share/arduino/libraries/Wire/utility/twi.c.obj
@@ -834,8 +873,8 @@ usr/share/arduino/libraries/Wire/utility/twi.obj: usr/share/arduino/libraries/Wi
 
 # target to build an object file
 usr/share/arduino/libraries/Wire/utility/twi.c.obj:
-	$(MAKE) -f CMakeFiles/uno_Wire.dir/build.make CMakeFiles/uno_Wire.dir/usr/share/arduino/libraries/Wire/utility/twi.c.obj
 	$(MAKE) -f CMakeFiles/uno_twi.dir/build.make CMakeFiles/uno_twi.dir/usr/share/arduino/libraries/Wire/utility/twi.c.obj
+	$(MAKE) -f CMakeFiles/uno_Wire.dir/build.make CMakeFiles/uno_Wire.dir/usr/share/arduino/libraries/Wire/utility/twi.c.obj
 .PHONY : usr/share/arduino/libraries/Wire/utility/twi.c.obj
 
 usr/share/arduino/libraries/Wire/utility/twi.i: usr/share/arduino/libraries/Wire/utility/twi.c.i
@@ -844,8 +883,8 @@ usr/share/arduino/libraries/Wire/utility/twi.i: usr/share/arduino/libraries/Wire
 
 # target to preprocess a source file
 usr/share/arduino/libraries/Wire/utility/twi.c.i:
-	$(MAKE) -f CMakeFiles/uno_Wire.dir/build.make CMakeFiles/uno_Wire.dir/usr/share/arduino/libraries/Wire/utility/twi.c.i
 	$(MAKE) -f CMakeFiles/uno_twi.dir/build.make CMakeFiles/uno_twi.dir/usr/share/arduino/libraries/Wire/utility/twi.c.i
+	$(MAKE) -f CMakeFiles/uno_Wire.dir/build.make CMakeFiles/uno_Wire.dir/usr/share/arduino/libraries/Wire/utility/twi.c.i
 .PHONY : usr/share/arduino/libraries/Wire/utility/twi.c.i
 
 usr/share/arduino/libraries/Wire/utility/twi.s: usr/share/arduino/libraries/Wire/utility/twi.c.s
@@ -854,8 +893,8 @@ usr/share/arduino/libraries/Wire/utility/twi.s: usr/share/arduino/libraries/Wire
 
 # target to generate assembly for a file
 usr/share/arduino/libraries/Wire/utility/twi.c.s:
-	$(MAKE) -f CMakeFiles/uno_Wire.dir/build.make CMakeFiles/uno_Wire.dir/usr/share/arduino/libraries/Wire/utility/twi.c.s
 	$(MAKE) -f CMakeFiles/uno_twi.dir/build.make CMakeFiles/uno_twi.dir/usr/share/arduino/libraries/Wire/utility/twi.c.s
+	$(MAKE) -f CMakeFiles/uno_Wire.dir/build.make CMakeFiles/uno_Wire.dir/usr/share/arduino/libraries/Wire/utility/twi.c.s
 .PHONY : usr/share/arduino/libraries/Wire/utility/twi.c.s
 
 # Help Target
@@ -864,15 +903,18 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... arduino-size"
-	@echo "... arduino"
-	@echo "... Adafruit_PWMServoDriver"
-	@echo "... uno_CORE"
-	@echo "... uno_Adafruit_PWMServoDriver"
-	@echo "... uno_Wire"
 	@echo "... uno_twi"
+	@echo "... uno_Adafruit_PWMServoDriver"
+	@echo "... uno_CORE"
+	@echo "... edit_cache"
+	@echo "... Adafruit_PWMServoDriver"
+	@echo "... uno_Wire"
+	@echo "... arduino"
+	@echo "... arduino-size"
+	@echo "... arduino-upload"
+	@echo "... upload"
+	@echo "... arduino-serial"
 	@echo "... arduino_arduino.ino.obj"
 	@echo "... arduino_arduino.ino.i"
 	@echo "... arduino_arduino.ino.s"

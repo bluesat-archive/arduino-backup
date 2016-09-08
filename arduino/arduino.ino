@@ -1,5 +1,7 @@
+#include <Wire.h>
+
 #include <Arduino.h>
-#include "libraries/Adafruit_PWMServoDriver/Adafruit_PWMServoDriver.h"
+#include "Adafruit_PWMServoDriver.h"
 #include "message.h"
 #include "pins.h"
 
@@ -10,46 +12,62 @@ void sendMsg(toNucAdapter msg);
 // see examples
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 
+char buffer[sizeof(toControlMsg)];
+char bytesRead;
+
 void setup() {
     Serial.begin(19200); //this is the speed specified on line 109 of Bluetongue.cpp I think it is correct
+    bytesRead = 0;
+    pwm.begin();
+  
+    pwm.setPWMFreq(50);
 }
 
 void loop() {
     toMsgAdapter msg;
     toNucAdapter fromMsg;
+    
+    while(Serial.available() > 0) {
+        buffer[++bytesRead] = Serial.read();
+        if(bytesRead >=  sizeof(struct toControlMsg))  {
+            break;
+        }
+    }
 
     //TODO: add adc code here
     //TODO: add claw feeedback here
-
+    fromMsg.msg.pot0 = bytesRead;
+    //sendMsg(fromMsg);
     msg = recieveMsg();
     if (msg.success) {
+      
         //note: we may want to wrap this with our saftey caps like it is on the board
         //I'm not 100% that this set PWM function actually sets a us pulse width, need to double check
 
-        pwm.setPWM(FL_SPEED, 0, msg.data.msg.flSpeed);
-        pwm.setPWM(BL_SPEED, 0, msg.data.msg.blSpeed);
-        pwm.setPWM(FR_SPEED, 0, msg.data.msg.frSpeed);
-        pwm.setPWM(BR_SPEED, 0, msg.data.msg.brSpeed);
+        setPin(FL_SPEED, 0, msg.data.msg.flSpeed);
+        setPin(BL_SPEED, 0, msg.data.msg.blSpeed);
+        setPin(FR_SPEED, 0, msg.data.msg.frSpeed);
+        setPin(BR_SPEED, 0, msg.data.msg.brSpeed);
 
 
-        pwm.setPWM(FL_ANG, 0, msg.data.msg.flAng);
-        pwm.setPWM(FR_ANG, 0, msg.data.msg.frAng);
+        setPin(FL_ANG, 0, msg.data.msg.flAng);
+        setPin(FR_ANG, 0, msg.data.msg.frAng);
 
 
-        pwm.setPWM(ARM_ROT, 0, msg.data.msg.armRotate);
-        pwm.setPWM(ARM_TOP, 0, msg.data.msg.armTop);
-        pwm.setPWM(ARM_BOT, 0, msg.data.msg.armBottom);
+        setPin(ARM_ROT, 0, msg.data.msg.armRotate);
+        setPin(ARM_TOP, 0, msg.data.msg.armTop);
+        setPin(ARM_BOT, 0, msg.data.msg.armBottom);
 
         //These two + grip are 7.4V
-        pwm.setPWM(CLAW_ROT, 0, msg.data.msg.clawRotate);
-        pwm.setPWM(LIDAR_TILT, 0, msg.data.msg.lidarTilt);
+        setPin(CLAW_ROT, 0, msg.data.msg.clawRotate);
+        setPin(LIDAR_TILT, 0, msg.data.msg.lidarTilt);
 
         // do claw grip stuff here
 
         //store pot values
-        msg.data.msg.swerveLeft = analogRead(SWERVE_LEFT_POT);
-        msg.data.msg.swerveRight = analogRead(SWERVE_RIGHT_POT);
-        msg.data.msg.pot0 = analogRead(ARM_POT);
+        fromMsg.msg.swerveLeft = analogRead(LEFT_SWERVE_POT);
+        fromMsg.msg.swerveRight = analogRead(RIGHT_SWERVE_POT);
+        fromMsg.msg.pot0 = analogRead(ARM_POT);
 
         fromMsg.msg.magic = MESSAGE_MAGIC;
         sendMsg(fromMsg);
@@ -57,6 +75,9 @@ void loop() {
 
 }
 
+void setPin(int port, int rand, int pwmValue) {
+   pwm.setPWM(port, rand, 800*4096.0f/20000.0f); 
+}
 
 /**
  * Attempts to read a new serial message.
@@ -65,16 +86,20 @@ void loop() {
 toMsgAdapter recieveMsg() {
 
     toMsgAdapter resp;
-    if(Serial.available() < sizeof(struct toControlMsg)) {
+    if(bytesRead < sizeof(struct toControlMsg)) {
         resp.success = false;
         return resp;
     } else {
-        Serial.readBytes(resp.data.structBytes, sizeof(struct toControlMsg));
+        memcpy(resp.data.structBytes, buffer, sizeof(struct toControlMsg));
+        //Serial.readBytes(resp.data.structBytes, sizeof(struct toControlMsg));
         resp.success = true;
+        bytesRead = 0;
     }
     return resp;
 }
 
 void sendMsg(toNucAdapter msg) {
-    Serial.write((const uint8_t *)msg.structBytes, sizeof(struct toNUCMsg));
+  for(int i = 0; i < sizeof(struct toNUCMsg); ++i) {
+    Serial.write(msg.structBytes[i]);
+  }
 }

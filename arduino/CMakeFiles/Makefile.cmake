@@ -40,11 +40,14 @@ set(CMAKE_MAKEFILE_PRODUCTS
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
-  "CMakeFiles/arduino-size.dir/DependInfo.cmake"
-  "CMakeFiles/arduino.dir/DependInfo.cmake"
-  "CMakeFiles/Adafruit_PWMServoDriver.dir/DependInfo.cmake"
-  "CMakeFiles/uno_CORE.dir/DependInfo.cmake"
-  "CMakeFiles/uno_Adafruit_PWMServoDriver.dir/DependInfo.cmake"
-  "CMakeFiles/uno_Wire.dir/DependInfo.cmake"
   "CMakeFiles/uno_twi.dir/DependInfo.cmake"
+  "CMakeFiles/uno_Adafruit_PWMServoDriver.dir/DependInfo.cmake"
+  "CMakeFiles/uno_CORE.dir/DependInfo.cmake"
+  "CMakeFiles/Adafruit_PWMServoDriver.dir/DependInfo.cmake"
+  "CMakeFiles/uno_Wire.dir/DependInfo.cmake"
+  "CMakeFiles/arduino.dir/DependInfo.cmake"
+  "CMakeFiles/arduino-size.dir/DependInfo.cmake"
+  "CMakeFiles/arduino-upload.dir/DependInfo.cmake"
+  "CMakeFiles/upload.dir/DependInfo.cmake"
+  "CMakeFiles/arduino-serial.dir/DependInfo.cmake"
   )
