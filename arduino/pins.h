@@ -11,3 +11,6 @@
 #define CLAW_ROT    -1
 #define LIDAR_TILT  -1
 
+#define ARM_POT -1
+#define LEFT_SWERVE_POT -1
+#define RIGHT_SWERVE_POT -1

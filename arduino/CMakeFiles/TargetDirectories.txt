@@ -1,0 +1,9 @@
+/home/blusat/arduino-backup/arduino/CMakeFiles/edit_cache.dir
+/home/blusat/arduino-backup/arduino/CMakeFiles/rebuild_cache.dir
+/home/blusat/arduino-backup/arduino/CMakeFiles/arduino-size.dir
+/home/blusat/arduino-backup/arduino/CMakeFiles/arduino.dir
+/home/blusat/arduino-backup/arduino/CMakeFiles/Adafruit_PWMServoDriver.dir
+/home/blusat/arduino-backup/arduino/CMakeFiles/uno_CORE.dir
+/home/blusat/arduino-backup/arduino/CMakeFiles/uno_Adafruit_PWMServoDriver.dir
+/home/blusat/arduino-backup/arduino/CMakeFiles/uno_Wire.dir
+/home/blusat/arduino-backup/arduino/CMakeFiles/uno_twi.dir
