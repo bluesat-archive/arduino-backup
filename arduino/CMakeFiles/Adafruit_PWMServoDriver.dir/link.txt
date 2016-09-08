@@ -1,2 +1,0 @@
-/usr/bin/avr-ar qc libAdafruit_PWMServoDriver.a  CMakeFiles/Adafruit_PWMServoDriver.dir/libraries/Adafruit_PWMServoDriver/Adafruit_PWMServoDriver.cpp.obj
-/usr/bin/avr-ranlib libAdafruit_PWMServoDriver.a
