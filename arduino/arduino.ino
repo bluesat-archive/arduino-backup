@@ -5,6 +5,9 @@
 #include "message.h"
 #include "pins.h"
 
+#include <SoftwareSerial.h>
+
+SoftwareSerial mySerial(10, 11); // RX, TX
 
 bool recieveMsg();
 void sendMsg(toNucAdapter msg);
@@ -16,7 +19,10 @@ char buffer[sizeof(toControlMsg)];
 char bytesRead;
 
 void setup() {
-    Serial.begin(19200); //this is the speed specified on line 109 of Bluetongue.cpp I think it is correct
+    //Serial.begin(19200); //this is the speed specified on line 109 of Bluetongue.cpp I think it is correct
+
+    mySerial.begin(19200);
+
     bytesRead = 0;
     pwm.begin();
   
@@ -31,8 +37,8 @@ void loop() {
     
     byte MAGIC[2] = {0x55, 0xAA};
     
-    while(Serial.available() > 0) {
-        char val = Serial.read();
+    while(mySerial.available() > 0) {
+        char val = mySerial.read();
         if(val == MAGIC[0]) {
           bytesRead = 0;
           foundFirst = true;
@@ -114,7 +120,7 @@ bool recieveMsg() {
         return false;
     } else {
         //memcpy(resp.data.structBytes, buffer, sizeof(struct toControlMsg));
-        //Serial.readBytes(resp.data.structBytes, sizeof(struct toControlMsg));
+        //mySerial.readBytes(resp.data.structBytes, sizeof(struct toControlMsg));
         //resp.success = true;
         bytesRead = 0;
         return true;
@@ -124,6 +130,6 @@ bool recieveMsg() {
 
 void sendMsg(toNucAdapter msg) {
   for(int i = 0; i < sizeof(struct toNUCMsg); ++i) {
-    Serial.write(msg.structBytes[i]);
+    mySerial.write(msg.structBytes[i]);
   }
 }
