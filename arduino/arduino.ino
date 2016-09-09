@@ -23,11 +23,10 @@ char bytesRead;
 
 /********** COPY FROM CLAW FEEDBACK ******************/
 
-#define NUMBER -70
-#define OTHER_NUMBER 70
+#define ERROR_NUMBER 70
 //#define CLAWPIN 0 // depends on which pinit's attached to on i2c to pwm module
 
-
+toNucAdapter fromMsg;
 int out = 0;    // variable to store the servo position
 const int analogInPin = A0;  // Claw feedback pin.
 int count = 0;
@@ -61,35 +60,35 @@ void clawFeedbackIteration(toNucAdapter *fromMsgPtr) {
    sensorValue = analogRead(CLAW_FEEDBACK);
    sensorValue = sensorValue * 2.9412 + 400; // calibration numbers
    int clawActual = (int)sensorValue;
-   avg_pos += clawActual;
-   count++;
-   if(count == 10) {
-      avg_pos /= count;
+   //avg_pos += clawActual;
+   //count++;
+   //if(count == 10) {
+     // avg_pos /= count;
 
-      fromMsgPtr->msg.clawActual = avg_pos; // sets the messsage (claw acctuall)
+      fromMsgPtr->msg.clawActual = clawActual; // sets the messsage (claw acctuall)
       
 
-      int error_out = clawCommand - avg_pos;
-      if(error_out < NUMBER || error_out > OTHER_NUMBER) {
+      int error_out = clawCommand - clawActual;
+      if(error_out < -ERROR_NUMBER || error_out > ERROR_NUMBER) {
          error_out = 0;
          out = 0;
 
       } else {
-         double out_inst = (double)(0.5*(double)(error_out) + avg_pos); // need to understand this
+         double out_inst = (double)(0.5*(double)(error_out) + clawActual); // need to understand this
          out = (int)out_inst;
       }
 
       setPin(CLAW_GRIP, 0, out);
-      avg_pos = 0;
+      clawActual = 0;
       count = 0;
-   }
+   //}
    fromMsgPtr->msg.gripEffort = out;
    
 }
 
 void loop() {
     
-    toNucAdapter fromMsg;
+    
     
     
     byte MAGIC[2] = {0x55, 0xAA};
@@ -120,10 +119,12 @@ void loop() {
 
     //fromMsg.msg.pot0 = bytesRead;
     //sendMsg(fromMsg);
+    clawFeedbackIteration(&fromMsg);//clawFeedbackIteration(&fromMsg);clawFeedbackIteration(&fromMsg);
+    //clawFeedbackError2
     msg.success = recieveMsg();
 
     if (bytesRead > 0) {
-        clawFeedbackIteration(&fromMsg);
+        
        //note: we may want to wrap this with our saftey caps like it is on the board
         //I'm not 100% that this set PWM function actually sets a us pulse width, need to double check
 
