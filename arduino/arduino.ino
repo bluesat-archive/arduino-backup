@@ -86,6 +86,27 @@ void clawFeedbackIteration(toNucAdapter *fromMsgPtr) {
    
 }
 
+
+int clawFailCount = 0;
+
+void clawFeedback2(toNucAdapter * fromMsgPtr) {
+   float sensorValue = 0;                    // value read from the pot
+   sensorValue = analogRead(CLAW_FEEDBACK);
+   sensorValue = sensorValue;// * 2.9412 + 400; // calibration numbers
+   int clawActual = (int)sensorValue;
+   /*
+   if(abs(clawActual - clawCommand) > ERROR_NUMBER) {
+      ++clawFailCount;
+      if(clawFailCount > 50) {
+         setPin(CLAW_GRIP, 0, 0);
+      }
+   } else {
+     setPin(CLAW_GRIP, 0, clawCommand);
+     clawFailCount = 0;
+   }*/
+   fromMsgPtr->msg.clawActual = clawActual;
+   setPin(CLAW_GRIP, 0, clawCommand);
+}
 void loop() {
     
     
@@ -119,8 +140,8 @@ void loop() {
 
     //fromMsg.msg.pot0 = bytesRead;
     //sendMsg(fromMsg);
-    clawFeedbackIteration(&fromMsg);//clawFeedbackIteration(&fromMsg);clawFeedbackIteration(&fromMsg);
-    //clawFeedbackError2
+    //clawFeedbackIteration(&fromMsg);//clawFeedbackIteration(&fromMsg);clawFeedbackIteration(&fromMsg);
+    clawFeedback2(&fromMsg);
     msg.success = recieveMsg();
 
     if (bytesRead > 0) {
