@@ -24,11 +24,11 @@ char bytesRead;
 
 #define NUMBER -70
 #define OTHER_NUMBER 70
+#define CLAWPIN 0 // depends on which pinit's attached to on i2c to pwm module
 
 
 int out = 0;    // variable to store the servo position
-const int analogInPin = A0;  // Analog input pin that the potentiometer is attached to
-const int servoPin = 9;
+const int analogInPin = A0;  // Claw feedback pin.
 int count = 0;
 int avg_pos = 0;
 int avg_error = 0;
@@ -50,7 +50,7 @@ void setup() {
     pwm.setPWMFreq(52);
 
 /********** COPY FROM CLAW FEEDBACK ******************/
-   yield();
+   yield(); // not 100% on this
 /*****************************************************/
 
 }
@@ -85,58 +85,34 @@ void loop() {
 
     //TODO: add adc code here
 
-    //TODO: add claw feeedback here
     /********** COPY FROM CLAW FEEDBACK ******************/
     float sensorValue = 0;        // value read from the pot
     sensorValue = analogRead(analogInPin);
-    sensorValue = sensorValue * 2.9412 + 400;
+    sensorValue = sensorValue * 2.9412 + 400; // calibration numbers
 
-    /*Serial.print("Sensor Value = ");
-      Serial.print(sensorValue);
-      Serial.print("\n");*/
 
     int clawActual = (int)sensorValue;
     avg_pos += clawActual;
 
-
-
-
-
-    if (Serial.available() > 0) {
-       clawCommand = Serial.parseInt();
-       Serial.print("READ INPUT\n");
-    }
-
     if(count == 10) {
        avg_pos /= count;
-
-       // send back avg_pos;
+       // I think it's fromMsg or whatever
+       fromMsg.msg.clawActual = avg_pos; // not sure if this correct
        int error_out = clawCommand - avg_pos;
        if(error_out < NUMBER || error_out > OTHER_NUMBER) {
           error_out = 0;
           out = 0;
-          Serial.print("ERROR TOO BIG\n");
+          
        } else {
           double out_inst = (double)(0.5*(double)(error_out) + avg_pos); // need to understand this
           out = (int)out_inst;
        }
 
-       setPin(0, 0, out);
-       //28analogWrite(servoPin, out);
-       //Serial.print("clawCommand = ");
-       //Serial.print(clawCommand);
-       //Serial.print("\t out = ");
-       //Serial.print(out);
-       //Serial.print("\t avg_pos = ");
-       //Serial.print(avg_pos);
-       //Serial.print("\t error_out = ");
-       //Serial.print(error_out);
-       //Serial.print("\n");
-       //count = 0;
+       setPin(CLAWPIN, 0, out); // 
        avg_pos = 0;
+       count = 0;
     }
     count++;
-    // need to get desired position 
 
 /*****************************************************/
     //fromMsg.msg.pot0 = bytesRead;
@@ -168,6 +144,11 @@ void loop() {
         setPin(LIDAR_TILT, 0, msg.data.msg.lidarTilt);
 
         // do claw grip stuff here
+
+        if(clawCommand != msg.data.msg.clawGrip) {
+            clawCommand = msg.data.msg.clawGrip;
+            count = 0;
+        }
 
         //store pot values
         fromMsg.msg.swerveLeft = analogRead(LEFT_SWERVE_POT);
