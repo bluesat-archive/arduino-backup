@@ -58,32 +58,32 @@ void clawFeedbackIteration(toNucAdapter *fromMsgPtr) {
    //Calculating Claw Actual
    float sensorValue = 0;                    // value read from the pot
    sensorValue = analogRead(CLAW_FEEDBACK);
-   sensorValue = sensorValue * 2.9412 + 400; // calibration numbers
+   sensorValue = sensorValue * 3.30609 + 430; // calibration numbers
    int clawActual = (int)sensorValue;
    //avg_pos += clawActual;
    //count++;
    //if(count == 10) {
-     // avg_pos /= count;
+   // avg_pos /= count;
 
-      fromMsgPtr->msg.clawActual = clawActual; // sets the messsage (claw acctuall)
-      
+   fromMsgPtr->msg.clawActual = clawActual; // sets the messsage (claw acctuall)
 
-      int error_out = clawCommand - clawActual;
-      if(error_out < -ERROR_NUMBER || error_out > ERROR_NUMBER) {
-         error_out = 0;
-         out = 0;
 
-      } else {
-         double out_inst = (double)(0.5*(double)(error_out) + clawActual); // need to understand this
-         out = (int)out_inst;
-      }
+   int error_out = clawCommand - clawActual;
+   if(error_out < -ERROR_NUMBER || error_out > ERROR_NUMBER) {
+      error_out = 0;
+      out = 0;
 
-      setPin(CLAW_GRIP, 0, out);
-      clawActual = 0;
-      count = 0;
+   } else {
+      double out_inst = (double)(0.5*(double)(error_out) + clawActual); // need to understand this
+      out = (int)out_inst;
+   }
+
+   setPin(CLAW_GRIP, 0, out);
+   clawActual = 0;
+   count = 0;
    //}
    fromMsgPtr->msg.gripEffort = out;
-   
+
 }
 
 void loop() {
