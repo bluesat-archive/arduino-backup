@@ -1,18 +1,8 @@
-#include <PWM.h>
+#include <Wire.h>
+#include "Adafruit_PWMServoDriver.h"
 
-
-/* Sweep
- by BARRAGAN <http://barraganstudio.com> 
- This example code is in the public domain.
-
- modified 8 Nov 2013
- by Scott Fitzgerald
- http://www.arduino.cc/en/Tutorial/Sweep
-*/ 
-
-#define NUMBER -10
-#define OTHER_NUMBER 10
-
+#define NUMBER -70
+#define OTHER_NUMBER 70
             
  
 int out = 0;    // variable to store the servo position 
@@ -23,23 +13,15 @@ int avg_pos = 0;
 int avg_error = 0;
 int clawCommand = 0;
 int32_t frequency = 50;
+
+Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
+
 void setup() 
 { 
-
-  //initialize all timers except for 0, to save time keeping functions
-  InitTimersSafe(); 
-
-  //sets the frequency for the specified pin
-  bool success = SetPinFrequencySafe(servoPin, frequency);
-  
-  //if the pin frequency was set successfully, turn pin 13 on
-  if(success) {
-    pinMode(13, OUTPUT);
-    digitalWrite(13, HIGH);    
-  }
-  
   Serial.begin(9600);
-  
+  pwm.begin();
+  pwm.setPWMFreq(52);
+  yield();
 } 
 // FUCK
 // 
@@ -47,7 +29,7 @@ void loop()
 { 
   float sensorValue = 0;        // value read from the pot
   sensorValue = analogRead(analogInPin);
-  sensorValue = sensorValue * 0.03961 + 4.539;
+  sensorValue = sensorValue * 2.9412 + 400;
 
   /*Serial.print("Sensor Value = ");
   Serial.print(sensorValue);
@@ -75,11 +57,11 @@ void loop()
         out = 0;
         Serial.print("ERROR TOO BIG\n");
       } else {
-        double out_inst = (double)(1*(double)(error_out) + avg_pos); // need to understand this
+        double out_inst = (double)(0.5*(double)(error_out) + avg_pos); // need to understand this
         out = (int)out_inst;
       }
       
-      pwmWrite(servoPin, out);
+      setPin(0, 0, out);
       //28analogWrite(servoPin, out);
       Serial.print("clawCommand = ");
       Serial.print(clawCommand);
@@ -98,4 +80,6 @@ void loop()
   
 } 
 
-
+void setPin(int port, int rand, int pwmValue) {
+   pwm.setPWM(port, rand, pwmValue*(4096.0/20000.0)); 
+}
