@@ -24,7 +24,7 @@ char bytesRead;
 
 #define NUMBER -70
 #define OTHER_NUMBER 70
-#define CLAWPIN 0 // depends on which pinit's attached to on i2c to pwm module
+//#define CLAWPIN 0 // depends on which pinit's attached to on i2c to pwm module
 
 
 int out = 0;    // variable to store the servo position
@@ -49,13 +49,42 @@ void setup() {
 
     pwm.setPWMFreq(52);
 
-/********** COPY FROM CLAW FEEDBACK ******************/
-   yield(); // not 100% on this
-/*****************************************************/
-
 }
 bool foundFirst = false;
 toMsgAdapter msg;
+
+void claw_feedback_iteration(fromMsgAdapter *fromMsgPtr) {
+
+   //Calculating Claw Actual
+   float sensorValue = 0;                    // value read from the pot
+   sensorValue = analogRead(analogInPin);
+   sensorValue = sensorValue * 2.9412 + 400; // calibration numbers
+   int clawActual = (int)sensorValue;
+   avg_pos += clawActual;
+
+   if(count == 10) {
+      avg_pos /= count;
+
+      fromMsgPtr->msg.clawActual = avg_pos; // sets the messsage (claw acctuall)
+
+      int error_out = clawCommand - avg_pos;
+      if(error_out < NUMBER || error_out > OTHER_NUMBER) {
+         error_out = 0;
+         out = 0;
+
+      } else {
+         double out_inst = (double)(0.5*(double)(error_out) + avg_pos); // need to understand this
+         out = (int)out_inst;
+      }
+
+      setPin(CLAW_GRIP, 0, out);
+      avg_pos = 0;
+      count = 0;
+   }
+
+   count++;
+}
+
 void loop() {
     
     toNucAdapter fromMsg;
@@ -85,43 +114,15 @@ void loop() {
 
     //TODO: add adc code here
 
-    /********** COPY FROM CLAW FEEDBACK ******************/
-    float sensorValue = 0;        // value read from the pot
-    sensorValue = analogRead(analogInPin);
-    sensorValue = sensorValue * 2.9412 + 400; // calibration numbers
+    claw_feedback_iteration(&fromMsg);
 
-
-    int clawActual = (int)sensorValue;
-    avg_pos += clawActual;
-
-    if(count == 10) {
-       avg_pos /= count;
-       // I think it's fromMsg or whatever
-       fromMsg.msg.clawActual = avg_pos; // not sure if this correct
-       int error_out = clawCommand - avg_pos;
-       if(error_out < NUMBER || error_out > OTHER_NUMBER) {
-          error_out = 0;
-          out = 0;
-          
-       } else {
-          double out_inst = (double)(0.5*(double)(error_out) + avg_pos); // need to understand this
-          out = (int)out_inst;
-       }
-
-       setPin(CLAWPIN, 0, out); // 
-       avg_pos = 0;
-       count = 0;
-    }
-    count++;
-
-/*****************************************************/
     //fromMsg.msg.pot0 = bytesRead;
     //sendMsg(fromMsg);
     msg.success = recieveMsg();
-    
-    if (bytesRead > 0) {    
-      
-        //note: we may want to wrap this with our saftey caps like it is on the board
+
+    if (bytesRead > 0) {
+
+       //note: we may want to wrap this with our saftey caps like it is on the board
         //I'm not 100% that this set PWM function actually sets a us pulse width, need to double check
 
         setPin(FL_SPEED, 0, msg.data.msg.flSpeed);
@@ -165,7 +166,7 @@ void loop() {
 }
 
 void setPin(int port, int rand, int pwmValue) {
-   pwm.setPWM(port, rand, pwmValue*(4096.0/20000.0)); 
+   pwm.setPWM(port, rand, pwmValue*(4096.0/20000.0));
 }
 
 /**
