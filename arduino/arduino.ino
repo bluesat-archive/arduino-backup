@@ -1,3 +1,4 @@
+
 #include <Wire.h>
 
 #include <Arduino.h>
@@ -97,7 +98,7 @@ void loop() {
     int clawActual = (int)sensorValue;
     avg_pos += clawActual;
 
-    // recalibrate
+
 
 
 
