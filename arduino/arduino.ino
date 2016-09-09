@@ -12,6 +12,7 @@ SoftwareSerial mySerial(10, 11); // RX, TX
 
 bool recieveMsg();
 void sendMsg(toNucAdapter msg);
+void clawFeedbackIteration(toNucAdapter *fromMsgPtr);
 // Initialise the pwm board, note we may need to change the address
 // see examples
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
@@ -53,19 +54,20 @@ void setup() {
 bool foundFirst = false;
 toMsgAdapter msg;
 
-void claw_feedback_iteration(fromMsgAdapter *fromMsgPtr) {
+void clawFeedbackIteration(toNucAdapter *fromMsgPtr) {
 
    //Calculating Claw Actual
    float sensorValue = 0;                    // value read from the pot
-   sensorValue = analogRead(analogInPin);
+   sensorValue = analogRead(CLAW_FEEDBACK);
    sensorValue = sensorValue * 2.9412 + 400; // calibration numbers
    int clawActual = (int)sensorValue;
    avg_pos += clawActual;
-
+   count++;
    if(count == 10) {
       avg_pos /= count;
 
       fromMsgPtr->msg.clawActual = avg_pos; // sets the messsage (claw acctuall)
+      
 
       int error_out = clawCommand - avg_pos;
       if(error_out < NUMBER || error_out > OTHER_NUMBER) {
@@ -81,8 +83,8 @@ void claw_feedback_iteration(fromMsgAdapter *fromMsgPtr) {
       avg_pos = 0;
       count = 0;
    }
-
-   count++;
+   fromMsgPtr->msg.gripEffort = out;
+   
 }
 
 void loop() {
@@ -114,14 +116,14 @@ void loop() {
 
     //TODO: add adc code here
 
-    claw_feedback_iteration(&fromMsg);
+    
 
     //fromMsg.msg.pot0 = bytesRead;
     //sendMsg(fromMsg);
     msg.success = recieveMsg();
 
     if (bytesRead > 0) {
-
+        clawFeedbackIteration(&fromMsg);
        //note: we may want to wrap this with our saftey caps like it is on the board
         //I'm not 100% that this set PWM function actually sets a us pulse width, need to double check
 
