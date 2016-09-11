@@ -59,7 +59,7 @@ void clawFeedbackIteration(toNucAdapter *fromMsgPtr) {
    float sensorValue = 0;                    // value read from the pot
    sensorValue = analogRead(CLAW_FEEDBACK);
    sensorValue = sensorValue * 3.30609 + 430; // calibration numbers
-   int clawActual = (int)sensorValue;
+   int clawActual = (int)sensorValue;/*
    //avg_pos += clawActual;
    //count++;
    //if(count == 10) {
@@ -81,9 +81,10 @@ void clawFeedbackIteration(toNucAdapter *fromMsgPtr) {
    setPin(CLAW_GRIP, 0, out);
    clawActual = 0;
    count = 0;
-   //}
-   fromMsgPtr->msg.gripEffort = out;
-
+   //}*/
+   fromMsgPtr->msg.gripEffort = clawCommand;
+   fromMsgPtr->msg.clawActual = clawActual;
+   setPin(CLAW_GRIP, 0, clawCommand);
 }
 
 void loop() {
