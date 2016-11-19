@@ -12,6 +12,7 @@
 #define LIDAR_TILT   12
 #define CLAW_GRIP    13
 
-#define ARM_POT A0
-#define LEFT_SWERVE_POT A1
+#define ARM_POT          A0
+#define LEFT_SWERVE_POT  A1
 #define RIGHT_SWERVE_POT A2
+#define CLAW_FEEDBACK    A3
