@@ -53,45 +53,27 @@ void setup() {
 bool foundFirst = false;
 toMsgAdapter msg;
 
+/**
+ * Do claw feedback stuff
+ * @param fromMsgPtr incoming message
+ */
 void clawFeedbackIteration(toNucAdapter *fromMsgPtr) {
 
    //Calculating Claw Actual
    float sensorValue = 0;                    // value read from the pot
    sensorValue = analogRead(CLAW_FEEDBACK);
    sensorValue = sensorValue * 3.30609 + 430; // calibration numbers
-   int clawActual = (int)sensorValue;/*
-   //avg_pos += clawActual;
-   //count++;
-   //if(count == 10) {
-   // avg_pos /= count;
-
-   fromMsgPtr->msg.clawActual = clawActual; // sets the messsage (claw acctuall)
-
-
-   int error_out = clawCommand - clawActual;
-   if(error_out < -ERROR_NUMBER || error_out > ERROR_NUMBER) {
-      error_out = 0;
-      out = 0;
-
-   } else {
-      double out_inst = (double)(0.5*(double)(error_out) + clawActual); // need to understand this
-      out = (int)out_inst;
-   }
-
-   setPin(CLAW_GRIP, 0, out);
-   clawActual = 0;
-   count = 0;
-   //}*/
+   int clawActual = (int)sensorValue;
    fromMsgPtr->msg.gripEffort = clawCommand;
    fromMsgPtr->msg.clawActual = clawActual;
    setPin(CLAW_GRIP, 0, clawCommand);
 }
 
+/**
+ * Main loop
+ */
 void loop() {
-    
-    
-    
-    
+
     byte MAGIC[2] = {0x55, 0xAA};
     
     while(mySerial.available() > 0) {
@@ -99,13 +81,8 @@ void loop() {
         if(val == MAGIC[0]) {
           bytesRead = 0;
           foundFirst = true;
-        } /*else if(foundFirst && val == MAGIC[1]) {
-          bytesRead = 1;
-          foundFirst = false;
-        } else {
-          foundFirst = false;
-        }*/
-        
+        }
+
         if(foundFirst) {
           msg.data.structBytes[++bytesRead] = val;
           if(bytesRead >=  sizeof(struct toControlMsg))  {
@@ -114,20 +91,15 @@ void loop() {
         }
     }
 
-    //TODO: add adc code here
 
-    
+    clawFeedbackIteration(&fromMsg);
 
-    //fromMsg.msg.pot0 = bytesRead;
-    //sendMsg(fromMsg);
-    clawFeedbackIteration(&fromMsg);//clawFeedbackIteration(&fromMsg);clawFeedbackIteration(&fromMsg);
     //clawFeedbackError2
     msg.success = recieveMsg();
 
     if (bytesRead > 0) {
         
-       //note: we may want to wrap this with our saftey caps like it is on the board
-        //I'm not 100% that this set PWM function actually sets a us pulse width, need to double check
+        //note: we may want to wrap this with our saftey caps like it is on the board
 
         setPin(FL_SPEED, 0, msg.data.msg.flSpeed);
         setPin(BL_SPEED, 0, msg.data.msg.blSpeed);
@@ -140,7 +112,6 @@ void loop() {
 
 
         setPin(ARM_ROT, 0, msg.data.msg.armRotate);
-        //setPin(ARM_ROT, 0, 1500);
         setPin(ARM_TOP, 0, msg.data.msg.armTop);
         setPin(ARM_BOT, 0, msg.data.msg.armBottom);
 
@@ -169,6 +140,12 @@ void loop() {
 
 }
 
+/**
+ * Sets a PWM value for a pin
+ * @param port the port on the pwm board to set (off by one)
+ * @param rand 0??
+ * @param pwmValue the value to set
+ */
 void setPin(int port, int rand, int pwmValue) {
    pwm.setPWM(port, rand, pwmValue*(4096.0/20000.0));
 }
@@ -181,18 +158,17 @@ bool recieveMsg() {
 
     toMsgAdapter resp;
     if(bytesRead < sizeof(struct toControlMsg)) {
-        //resp.success = false;
         return false;
     } else {
-        //memcpy(resp.data.structBytes, buffer, sizeof(struct toControlMsg));
-        //mySerial.readBytes(resp.data.structBytes, sizeof(struct toControlMsg));
-        //resp.success = true;
         bytesRead = 0;
         return true;
-
     }
 }
 
+/**
+ * Write out the message back to the nuc
+ * @param msg the message to write out
+ */
 void sendMsg(toNucAdapter msg) {
   for(int i = 0; i < sizeof(struct toNUCMsg); ++i) {
     mySerial.write(msg.structBytes[i]);
