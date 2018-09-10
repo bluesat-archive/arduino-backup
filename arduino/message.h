@@ -8,7 +8,7 @@
 #ifndef MESSAGE_H
 #define	MESSAGE_H
 
-#ifdef	__cplusplus
+#ifdef cplusplus
 extern "C" {
 #endif
 
@@ -24,18 +24,17 @@ extern "C" {
         int16_t altitude;
         uint16_t fixValid;
     } GPSData;
-    
+
     typedef struct {
         int16_t x, y, z;
         int16_t padding;
     } MagnometerData;
-    
+
     typedef struct {
         int16_t gx, gy, gz;
         int16_t ax, ay, az;
     } IMUData;
-    
-    
+
     struct toControlMsg {
         uint16_t magic;
         int16_t frSpeed;
@@ -66,17 +65,17 @@ extern "C" {
         IMUData imuData;
         uint16_t swerveLeft; // Swerve Positions from potentiometers
         uint16_t swerveRight;
-    
+
         uint16_t pot0; // TODO: implement and rename when being used.
         uint16_t pot1;
         uint16_t pot2; // temp until rover code message is fixed.
         uint16_t pot3;
-        
+
         uint16_t armLower; // Arm servo displacement measurements
         uint16_t armHigher;
 
         uint16_t gripEffort;
-        uint16_t clawActual; 
+        uint16_t clawActual;
     };
 
     typedef struct _toMsgAdapater {
@@ -91,9 +90,8 @@ extern "C" {
         struct toNUCMsg msg;
         char structBytes[sizeof(struct toNUCMsg)];
     } toNucAdapter;
-#ifdef	__cplusplus
+#ifdef _cplusplus
 }
 #endif
 
 #endif	/* MESSAGE_H */
-

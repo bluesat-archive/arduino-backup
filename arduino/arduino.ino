@@ -117,7 +117,7 @@ void loop() {
 
         //These two + grip are 7.4V
         setPin(CLAW_ROT, 0, msg.data.msg.clawRotate);
-        setPin(LIDAR_TILT, 0, msg.data.msg.lidarTilt);
+        setPin(LIDAR_TILT, 0, msg.data.msg.lidarTilt); // Change this shit
 
         // do claw grip stuff here
 
