@@ -10,7 +10,8 @@ String readString;
 Servo myservo;  // create servo object to control a servo 
 
 void setup() {
-  Serial.begin(9600);
+  // Serial.begin(9600);
+  Serial.begin(19200);
   myservo.writeMicroseconds(1500); //set initial servo position if desired
   myservo.attach(2);  //the pin for the servo control 
   Serial.println("servo-test-22-dual-input"); // so I can keep track of what is loaded
@@ -18,18 +19,16 @@ void setup() {
 
 void loop() {
   while (Serial.available()) {
-    char c = Serial.read();  //gets one byte from serial buffer
-    readString += c; //makes the string readString
-    delay(2);  //slow looping to allow buffer to fill with next character
+    char c = Serial.read();  // gets one byte from serial buffer
+    readString += c; // makes the string readString
+    delay(2);  // slow looping to allow buffer to fill with next character
   }
 
   if (readString.length() >0) {
-    Serial.println(readString);  //so you can see the captured string 
-    float r = readString.toFloat();  //convert readString into a number
+    Serial.println(readString);  // so you can see the captured string 
+    float r = readString.toFloat();  // convert readString into a number
     float n = r * 57296 / 1000; // degree to rad
-    
-    
-  
+
     // auto select appropriate value, copied from someone elses code.
     if(n >= 500)
     {
@@ -47,4 +46,3 @@ void loop() {
     readString=""; //empty for next input
   } 
 }
-
