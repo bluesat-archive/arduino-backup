@@ -5,14 +5,20 @@
 #include "Adafruit_PWMServoDriver.h"
 #include "message.h"
 #include "pins.h"
-
 #include <SoftwareSerial.h>
+#include <Servo.h>
+
+#define LIDAR_SERVO_PIN 2
 
 SoftwareSerial mySerial(10, 11); // RX, TX
+Servo lidarServo;
 
 bool recieveMsg();
 void sendMsg(toNucAdapter msg);
 void clawFeedbackIteration(toNucAdapter *fromMsgPtr);
+
+Servo myservo; // create servo object to control the lidar servo
+void lidarRotate(float tilt);
 // Initialise the pwm board, note we may need to change the address
 // see examples
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
@@ -41,14 +47,17 @@ int32_t frequency = 50;
 
 void setup() {
     //Serial.begin(19200); //this is the speed specified on line 109 of Bluetongue.cpp I think it is correct
-
     mySerial.begin(19200);
-
     bytesRead = 0;
     pwm.begin();
 
     pwm.setPWMFreq(52);
+    Serial.begin(9600);
+    // Serial.begin(19200);
+    myservo.writeMicroseconds(1500); //set initial servo position if desired
+    myservo.attach(LIDAR_SERVO_PIN); //the pin for the servo control 
 
+    Serial.println("servo-test-22-dual-input"); // so I can keep track of what is loaded
 }
 bool foundFirst = false;
 toMsgAdapter msg;
@@ -86,11 +95,10 @@ void loop() {
         if(foundFirst) {
           msg.data.structBytes[++bytesRead] = val;
           if(bytesRead >=  sizeof(struct toControlMsg))  {
-              break;
+            break;
           }
         }
     }
-
 
     clawFeedbackIteration(&fromMsg);
 
@@ -117,8 +125,9 @@ void loop() {
 
         //These two + grip are 7.4V
         setPin(CLAW_ROT, 0, msg.data.msg.clawRotate);
-        setPin(LIDAR_TILT, 0, msg.data.msg.lidarTilt);
 
+        // setPin(LIDAR_TILT, 0, msg.data.msg.lidarTilt); // Change this shit
+        lidarRotate(msg.data.msg.lidarTilt);
         // do claw grip stuff here
 
         if(clawCommand != msg.data.msg.clawGrip) {
@@ -138,6 +147,22 @@ void loop() {
         sendMsg(fromMsg);
     }
 
+}
+
+void lidarRotate(float tilt) {
+    // setPin(LIDAR_TILT, 0, msg.data.msg.lidarTilt); // Change this shit
+    float n = tilt * 57296 / 1000; // degree to rad
+
+    // auto select appropriate value, copied from someone else's code.
+    if(n >= 500) {
+        Serial.print("writing Microseconds: ");
+        Serial.println(n);
+        myservo.writeMicroseconds(n);
+    } else {
+        Serial.print("writing Angle: ");
+        Serial.println(n);
+        myservo.write(n);
+    }
 }
 
 /**
